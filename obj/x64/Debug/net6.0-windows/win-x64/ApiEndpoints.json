@@ -1,0 +1,172 @@
+[
+  {
+    "ContainingType": "M_One_Layer3.Controllers.FingerprintController",
+    "Method": "CloseDevice",
+    "RelativePath": "api/fingerprint/closedevice",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "M_One_Layer3.Controllers.FingerprintController",
+    "Method": "OpenDevice",
+    "RelativePath": "api/fingerprint/opendevice",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "M_One_Layer3.Controllers.FingerprintController",
+    "Method": "Search",
+    "RelativePath": "api/fingerprint/search",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "M_One_Layer3.Controllers.FingerprintController\u002BSearchRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "M_One_Layer3.Controllers.FingerprintController",
+    "Method": "StartCapture",
+    "RelativePath": "api/fingerprint/startcapture",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "M_One_Layer3.Controllers.FingerprintController\u002BStartCaptureRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "M_One_Layer3.Controllers.FingerprintController",
+    "Method": "StartEnroll",
+    "RelativePath": "api/fingerprint/startenroll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "M_One_Layer3.Controllers.FingerprintController\u002BEnrollRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "M_One_Layer3.Controllers.FingerprintController",
+    "Method": "StopCapture",
+    "RelativePath": "api/fingerprint/stopcapture",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "M_One_Layer3.Controllers.FingerprintController",
+    "Method": "Verify",
+    "RelativePath": "api/fingerprint/verify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "M_One_Layer3.Controllers.FingerprintController\u002BVerifyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterController",
+    "Method": "PrintBarcode",
+    "RelativePath": "api/Printer/print-barcode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "barcode",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterController",
+    "Method": "PrintQRCode",
+    "RelativePath": "api/Printer/print-qrcode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "qr",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterController",
+    "Method": "PrintSample",
+    "RelativePath": "api/Printer/print-sample",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterController",
+    "Method": "PrintText",
+    "RelativePath": "api/Printer/print-text",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "text",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
+    "RelativePath": "runtime",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "\u003C\u003Ef__AnonymousType4\u00602[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]

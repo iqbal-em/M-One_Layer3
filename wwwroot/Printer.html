@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Thermal Printer Control</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        input {
+            padding: 8px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f2f2f2;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🖨 Thermal Printer Panel</h2>
+
+    <!-- PRINT TEXT -->
+    <div class="section">
+        <h3>Print Text</h3>
+        <input type="text" id="txtText" placeholder="Enter text to print" />
+        <button onclick="printText()">Print</button>
+    </div>
+
+    <!-- PRINT QR -->
+    <div class="section">
+        <h3>Print QR Code</h3>
+        <input type="text" id="txtQR" placeholder="Enter QR content" />
+        <button onclick="printQR()">Print QR</button>
+    </div>
+
+    <!-- PRINT BARCODE -->
+    <div class="section">
+        <h3>Print Barcode</h3>
+        <input type="text" id="txtBarcode" placeholder="Enter barcode number" />
+        <button onclick="printBarcode()">Print Barcode</button>
+    </div>
+
+    <!-- SAMPLE RECEIPT -->
+    <div class="section">
+        <h3>Print Sample Receipt</h3>
+        <button onclick="printSample()">Print Sample</button>
+    </div>
+
+    <div id="result">Status: -</div>
+
+    <script>
+        const baseUrl = "/api/printer";
+
+        async function printText() {
+            const Text1 = document.getElementById("txtText").value;
+            console.log(Text1);
+            const response = await fetch(`${baseUrl}/print-text`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(Text1)
+            });
+
+            showResult(await response.json());
+        }
+
+        async function printQR() {
+            const qr = document.getElementById("txtQR").value;
+
+            const response = await fetch(`${baseUrl}/print-qrcode`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(qr)
+            });
+
+            showResult(await response.json());
+        }
+
+        async function printBarcode() {
+            const barcode = document.getElementById("txtBarcode").value;
+            console.log(barcode);
+
+            const response = await fetch(`${baseUrl}/print-barcode`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(barcode)
+            });
+
+            showResult(await response.json());
+        }
+
+        async function printSample() {
+            const response = await fetch(`${baseUrl}/print-sample`, {
+                method: "POST"
+            });
+
+            showResult(await response.json());
+        }
+
+        function showResult(result) {
+            document.getElementById("result").innerText =
+                "Status: " + (result.success ? "SUCCESS" : "FAILED") +
+                " | Message: " + result.message;
+        }
+    </script>
+
+</body>
+</html>

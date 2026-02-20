@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Fingerprint SDK</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        #previewImg {
+            width: 300px;
+            border: 1px solid #ccc;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+        }
+
+        .config-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            min-width: 160px;
+        }
+
+        .separator {
+            width: 1px;
+            background-color: #ccc;
+            height: 60px;
+        }
+
+        .config-item label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .config-item select {
+            padding: 5px;
+        }
+
+        .export-buttons {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Fingerprint Test</h2>
+
+    <div>
+        <button id="btnOpen">Open Device</button>
+        <button id="btnClose">Close Device</button>
+        <span id="deviceStatus">Device: CLOSED</span>
+    </div>
+
+    <hr />
+
+    <div class="config-row">
+
+        <!-- Mode Capture -->
+        <div class="config-item">
+            <label>Mode Capture</label>
+            <select id="mode">
+                <option value="0">LeftFinger</option>
+                <option value="1">RightFinger</option>
+                <option value="2">BothThumb</option>
+                <option value="3">OneFinger</option>
+                <option value="4">Roll</option>
+                <option value="5">TenFinger</option>
+            </select>
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- nMissingFinger -->
+        <div class="config-item">
+            <label>nMissingFinger</label>
+            <select id="missing">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- Feature Format -->
+        <div class="config-item">
+            <label>Feature Format</label>
+            <select id="featureFormat">
+                <option value="0">ANSI v2004</option>
+                <option value="1">ANSI v2009</option>
+                <option value="2">ISO v2005</option>
+                <option value="3">ISO v2011</option>
+            </select>
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- Image Format -->
+        <div class="config-item">
+            <label>Image Format</label>
+            <select id="imageFormat">
+                <option value="0">RAW</option>
+                <option value="1">JPEG</option>
+                <option value="2">BMP2000</option>
+                <option value="3">WSQ</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="export-buttons">
+        <button id="btnExportImage">Export Image</button>
+        <button id="btnExportTemplate">Export Template</button>
+    </div>
+
+    <hr />
+
+    <h3>Capture</h3>
+    <button id="btnStart">Start Capture</button>
+    <button id="btnStop">Stop Capture</button>
+
+    <br /><br />
+    <img id="previewImg" />
+
+    <hr />
+
+    <h3>Captured Fingers</h3>
+    <div id="fingerContainer" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+
+    <h3>Enroll (TenFinger Only)</h3>
+    <input type="number" id="userId" placeholder="User ID" />
+    <button id="btnEnroll">Start Enroll</button>
+
+<textarea id="txtEnroll" placeholder="Template Base64 will appear here"></textarea>
+
+    <hr />
+
+    hr />
+    <h3>VERIFY (1:1)</h3>
+
+    <div style="margin-bottom:10px;">
+        <label>User ID:</label>
+        <input type="number" id="verifyUserId" />
+    </div>
+
+    <button id="btnVerify">Start Verify</button>
+
+    <br /><br />
+
+    <label>Result:</label><br />
+<textarea id="txtVerifyResult" rows="2" style="width:100%;"></textarea>
+
+    <br /><br />
+
+    <label>Return JSON:</label><br />
+<textarea id="txtVerifyJson" rows="6" style="width:100%;"></textarea>
+
+    <hr />
+    <h3>SEARCH (1:N)</h3>
+
+    <button id="btnSearch">Start Search</button>
+
+    <br /><br />
+
+    <label>Result:</label><br />
+<textarea id="txtSearchResult" rows="2" style="width:100%;"></textarea>
+
+    <br /><br />
+
+    <label>Return JSON:</label><br />
+<textarea id="txtSearchJson" rows="6" style="width:100%;"></textarea>
+
+    <script>
+        let deviceOpened = false;
+        let capturing = false;
+
+        const hub = new signalR.HubConnectionBuilder()
+            .withUrl("/fingerprinthub")
+            .build();
+
+        hub.on("PreviewUpdated", base64 => {
+            if (!capturing) return;
+            $("#previewImg").attr("src", "data:image/bmp;base64," + base64);
+        });
+
+        hub.on("EnrollTemplate", base64 => {
+            console.log("Template:", base64);
+            $("#txtEnroll").val(base64);
+        });
+
+        hub.on("VerifyResult", data => {
+            if (data.success)
+                $("#txtVerifyResult").val("SUCCESS - UserID: " + data.userId);
+            else
+                $("#txtVerifyResult").val("FAILED");
+
+            $("#txtVerifyJson").val(JSON.stringify(result, null, 2));
+        });
+
+        hub.on("SearchResult", data => {
+            if (data.success)
+                $("#txtSearchResult").val("MATCH - UserID: " + data.userId);
+            else
+                $("#txtSearchResult").val("NO MATCH");
+
+            $("#txtSearchJson").val(JSON.stringify(result, null, 2));
+        });
+
+
+
+        hub.on("EnrollSuccess", () => alert("Enroll success"));
+        hub.on("EnrollFailed", msg => alert("Enroll failed: " + msg));
+
+        hub.on("FingerCompleted", data => {
+
+            console.log("Finger captured:", data);
+
+            const fingerIndex = data.fingerIndex;
+            const base64 = data.image;
+
+            const card = `
+                        <div style="border:1px solid #ccc; padding:5px; text-align:center;">
+                            <div>Finger ${fingerIndex}</div>
+                            <img src="data:image/bmp;base64,${base64}" width="120"/>
+                            <div>NFIQ: ${data.nfiq}</div>
+                        </div>
+                    `;
+
+            $("#fingerContainer").append(card);
+        });
+
+
+        hub.start().then(() => console.log("SignalR connected"));
+
+        /* ================= DEVICE ================= */
+
+        $("#btnOpen").click(async () => {
+            const res = await fetch("/api/fingerprint/opendevice", { method: "POST" });
+            const json = await res.json();
+
+            if (json.success) {
+                deviceOpened = true;
+                $("#deviceStatus").text("Device: OPENED");
+            }
+        });
+
+        $("#btnClose").click(async () => {
+            const res = await fetch("/api/fingerprint/closedevice", { method: "POST" });
+            const json = await res.json();
+
+            if (json.success) {
+                deviceOpened = false;
+                $("#deviceStatus").text("Device: CLOSED");
+            }
+        });
+
+        /* ================= START CAPTURE ================= */
+
+        $("#btnStart").click(async () => {
+            
+            const mode = parseInt($("#mode").val());
+
+            // RULE: Capture tidak boleh TenFinger
+            if (mode === 5) {
+                alert("StartCapture tidak mendukung TenFinger");
+                return;
+            }
+
+            capturing = true;
+            $("#fingerContainer").html(""); // <-- CLEAR finger list
+            $("#previewImg").attr("src", ""); // clear image
+
+            await fetch("/api/fingerprint/startcapture", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    mode: mode,
+                    nMissingFinger: parseInt($("#missing").val()) || 0
+                })
+            });
+        });
+
+        $("#btnStop").click(async () => {
+            capturing = false;
+            await fetch("/api/fingerprint/stopcapture", { method: "POST" });
+        });
+
+        /* ================= ENROLL ================= */
+
+        $("#btnEnroll").click(async () => {
+
+            const userId = parseInt($("#userId").val());
+            const Mode = parseInt($("#mode").val());
+            capturing = true;
+
+            if (Mode === 4) {
+                alert("Enroll tidak boleh OneFinger");
+                return;
+            }
+
+            if (isNaN(userId)) {
+                alert("User ID wajib diisi");
+                return;
+            }
+
+            $("#txtEnroll").val("");
+
+
+            const res = await fetch("/api/fingerprint/startenroll", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: userId,
+                    captureType: Mode,
+                    missingFinger: 0,
+                    featureFormat: parseInt($("#featureFormat").val())
+                })
+            });
+
+            const json = await res.json();
+            console.log("Enroll API:", json);
+        });
+
+        /* ================= VERIFY 1:1 ================= */
+
+
+        $("#btnVerify").click(async () => {
+
+            const userId = parseInt($("#verifyUserId").val());
+        
+            if (isNaN(userId)) {
+                alert("User ID wajib diisi");
+                return;
+            }
+            capturing = true;
+            // RULE: Verify hanya OneFinger
+            //const mode = 3;
+
+            const res = await fetch("/api/fingerprint/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: userId,
+                    captureType: parseInt($("#mode").val()),
+                    missingFinger: 0,
+                    featureFormat: parseInt($("#featureFormat").val())
+                })
+            });
+
+            const json = await res.json();
+            console.log("Verify Result:", json);
+        });
+
+        $("#btnSearch").click(async function () {
+
+            $("#txtSearchResult").val("Searching...");
+            $("#txtSearchJson").val("");
+            capturing = true;
+            await fetch("/api/fingerprint/search", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    captureType: parseInt($("#mode").val()),
+                    missingFinger: 0,
+                    featureFormat: parseInt($("#featureFormat").val())
+                })
+            });
+        });
+
+
+    </script>
+
+</body>
+</html>
