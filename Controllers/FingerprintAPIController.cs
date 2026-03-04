@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿//using M_One_Layer3.Enrollment_db;
+using Microsoft.AspNetCore.Mvc;
 
 namespace M_One_Layer3.Controllers
 {
@@ -7,6 +8,7 @@ namespace M_One_Layer3.Controllers
     public class FingerprintController : ControllerBase
     {
         private readonly FingerprintService_Bridge _bridge;
+        //private readonly Enrollment_Fingerprint _Enrollment_Fingerprint;
 
         public FingerprintController(FingerprintService_Bridge bridge)
         {
@@ -54,8 +56,7 @@ namespace M_One_Layer3.Controllers
         [HttpPost("startenroll")]
         public async Task<IActionResult> StartEnroll([FromBody] EnrollRequest req)
         {
-            var result = await _bridge.StartEnrollAsync(
-                req.UserId,
+            var result = await _bridge.StartEnrolldbAsync(
                 req.CaptureType,
                 req.MissingFinger,
                 req.FeatureFormat);
@@ -66,8 +67,9 @@ namespace M_One_Layer3.Controllers
         [HttpPost("verify")]
         public async Task<IActionResult> Verify([FromBody] VerifyRequest req)
         {
-            var result = await _bridge.VerifyAsync(
-                req.UserId,
+            //Console.WriteLine(req.Passnum);
+            var result = await _bridge.VerifyAsyncdb(
+                req.Passnum,
                 req.CaptureType,
                 req.MissingFinger,
                 req.FeatureFormat);
@@ -77,7 +79,7 @@ namespace M_One_Layer3.Controllers
         [HttpPost("search")]
         public async Task<IActionResult> Search([FromBody] SearchRequest req)
         {
-            var result = await _bridge.SearchAsync(
+            var result = await _bridge.SearchAsyncdb(
                 req.CaptureType,
                 req.MissingFinger,
                 req.FeatureFormat);
@@ -103,7 +105,7 @@ namespace M_One_Layer3.Controllers
 
         public class VerifyRequest
         {
-            public int UserId { get; set; }
+            public string Passnum { get; set; }
 
             public int CaptureType { get; set; }
 

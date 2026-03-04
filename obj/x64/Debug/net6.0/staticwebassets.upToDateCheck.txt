@@ -1,2 +1,0 @@
-wwwroot\fingerprint.html
-wwwroot\Printer.html

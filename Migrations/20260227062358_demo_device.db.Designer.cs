@@ -3,6 +3,7 @@ using System;
 using M_One_Layer3.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace M_One_Layer3.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260227062358_demo_device.db")]
+    partial class demo_devicedb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
@@ -58,13 +60,6 @@ namespace M_One_Layer3.Migrations
                     b.Property<int?>("FingerIndex")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Height")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte[]>("ImageData")
-                        .IsRequired()
-                        .HasColumnType("BLOB");
-
                     b.Property<Guid>("PersonId")
                         .HasColumnType("TEXT");
 
@@ -73,9 +68,6 @@ namespace M_One_Layer3.Migrations
                         .HasColumnType("BLOB");
 
                     b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Width")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
