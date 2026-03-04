@@ -1,0 +1,32 @@
+﻿@model M_One_Layer3.Domain.Person
+
+<h2>Pendaftaran Imigrasi</h2>
+
+<form asp-action="Register" method="post">
+    <div>
+        <label>Nama Lengkap</label>
+        <input asp-for="FullName" required />
+    </div>
+
+    <div>
+        <label>NIK</label>
+        <input asp-for="NIK" required />
+    </div>
+
+    <div>
+        <label>Passport</label>
+        <input asp-for="PassportNumber" required />
+    </div>
+
+    <div>
+        <label>Nationality</label>
+        <input asp-for="Nationality" required />
+    </div>
+
+    <div>
+        <label>Tanggal Lahir</label>
+        <input asp-for="DateOfBirth" type="date" required />
+    </div>
+
+    <button type="submit">Lanjut ke Enrollment</button>
+</form>

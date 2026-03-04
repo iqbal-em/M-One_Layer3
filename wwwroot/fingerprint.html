@@ -155,7 +155,7 @@
 
     <div style="margin-bottom:10px;">
         <label>User ID:</label>
-        <input type="number" id="verifyUserId" />
+        <input type="text" id="verifyUserId" />
     </div>
 
     <button id="btnVerify">Start Verify</button>
@@ -213,12 +213,13 @@
         });
 
         hub.on("SearchResult", data => {
-            if (data.success)
-                $("#txtSearchResult").val("MATCH - UserID: " + data.userId);
+            /*if (data.success)
+                $("#txtSearchResult").val("MATCH - UserID: " + data.Fullname);
             else
                 $("#txtSearchResult").val("NO MATCH");
-
+             
             $("#txtSearchJson").val(JSON.stringify(result, null, 2));
+            */
         });
 
 
@@ -319,13 +320,14 @@
             }
 
             $("#txtEnroll").val("");
+            $("#fingerContainer").html(""); // <-- CLEAR finger list
+            $("#previewImg").attr("src", ""); // clear image
 
 
             const res = await fetch("/api/fingerprint/startenroll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: userId,
                     captureType: Mode,
                     missingFinger: 0,
                     featureFormat: parseInt($("#featureFormat").val())
@@ -341,9 +343,9 @@
 
         $("#btnVerify").click(async () => {
 
-            const userId = parseInt($("#verifyUserId").val());
-        
-            if (isNaN(userId)) {
+            const passnum = String($("#verifyUserId").val());
+            //console.log(passnum);
+            if (passnum==null) {
                 alert("User ID wajib diisi");
                 return;
             }
@@ -355,7 +357,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: userId,
+                    Passnum: passnum,
                     captureType: parseInt($("#mode").val()),
                     missingFinger: 0,
                     featureFormat: parseInt($("#featureFormat").val())
@@ -368,10 +370,13 @@
 
         $("#btnSearch").click(async function () {
 
+            $("#fingerContainer").html(""); // <-- CLEAR finger list
+            $("#previewImg").attr("src", ""); // clear image
             $("#txtSearchResult").val("Searching...");
             $("#txtSearchJson").val("");
             capturing = true;
-            await fetch("/api/fingerprint/search", {
+            const res = await fetch("/api/fingerprint/search",
+                {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -379,7 +384,15 @@
                     missingFinger: 0,
                     featureFormat: parseInt($("#featureFormat").val())
                 })
-            });
+            
+                });
+
+
+            
+            const json = await res.json();
+            console.log("Search Result:", json);
+            document.getElementById("txtSearchResult").value =
+                JSON.stringify(json, null, 4);
         });
 
 

@@ -5,11 +5,12 @@ using M_One_Layer3;
 using M_One_Layer3.Hubs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using M_One_Layer3.Infrastructure.Database;
+//using M_One_Layer3.Enrollment_db;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Console.WriteLine(System.Runtime.InteropServices.RuntimeInformation.OSDescription);
-Console.WriteLine(System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+//Console.WriteLine(System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
 // =========================
 // 🔹 REGISTER SERVICES
 // =========================
@@ -21,12 +22,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddTransient<ThermalPrinterService58mm>(sp =>
     new ThermalPrinterService58mm("COM8", 9600));
-
+//builder.Services.AddScoped<Enrollment_Fingerprint>();
 
 builder.Services.AddSignalR();
-builder.Services.AddControllers();
-
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -53,14 +52,18 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapGet("/runtime", () =>
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Registration}/{action=Index}/{id?}");
+
+/*app.MapGet("/runtime", () =>
 {
     return new
     {
         OS = System.Runtime.InteropServices.RuntimeInformation.OSDescription,
         Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription
     };
-});
+});*/
 
 app.MapControllers();
 app.MapHub<FingerprintHub>("/fingerprinthub");

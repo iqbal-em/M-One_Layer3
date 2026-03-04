@@ -9,12 +9,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Enrollment_db\**" />
+    <Content Remove="Enrollment_db\**" />
+    <EmbeddedResource Remove="Enrollment_db\**" />
+    <None Remove="Enrollment_db\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <COMReference Include="{d37e2a3e-8545-3a39-9f4f-31827c9124ab}">
       <WrapperTool>tlbimp</WrapperTool>
       <VersionMinor>4</VersionMinor>
       <VersionMajor>2</VersionMajor>
       <Guid>d37e2a3e-8545-3a39-9f4f-31827c9124ab</Guid>
     </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\Registration\Index.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,7 +51,7 @@
 
   <ItemGroup>
     <Reference Include="Device.Core">
-      <HintPath>..\Device_core_.net6.0\Device.Core\bin\x64\Debug\net6.0\Device.Core.dll</HintPath>
+      <HintPath>..\Device_core_.net6.0\Device.Core\bin\Release\net6.0\Device.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 
